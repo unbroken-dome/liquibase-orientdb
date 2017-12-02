@@ -1,0 +1,71 @@
+package org.unbrokendome.liquibase.orientdb.sql;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
+
+import liquibase.structure.DatabaseObject;
+
+import org.apache.commons.lang3.StringUtils;
+
+import org.unbrokendome.liquibase.orientdb.structure.OrientIndex;
+import org.unbrokendome.liquibase.orientdb.structure.OrientIndexedProperty;
+
+
+public class CreateIndexSql extends AbstractOrientSql {
+
+    private final OrientIndex index;
+
+
+    public CreateIndexSql(OrientIndex index) {
+        this.index = index;
+    }
+
+
+    @Override
+    public String toSql() {
+        StringBuilder builder = new StringBuilder()
+                .append("CREATE INDEX ")
+                .append(index.getName())
+                .append(" ");
+
+        if (index.getOrientClass() != null && index.hasCustomName()) {
+            builder.append("ON ")
+                    .append(index.getOrientClass().getName())
+                    .append(" (")
+                    .append(index.getIndexedProperties().stream()
+                            .map(this::indexedPropertyToSql)
+                            .collect(Collectors.joining(",")))
+                    .append(") ");
+        }
+
+        builder.append(index.getType());
+
+        if (index.getKeyTypes() != null) {
+            builder.append(" ")
+                    .append(StringUtils.join(index.getKeyTypes(), ','));
+        }
+
+        if (!index.isIgnoreNullValues()) {
+            builder.append(" METADATA { ignoreNullValues : false }");
+        }
+
+        return builder.toString();
+    }
+
+
+    private String indexedPropertyToSql(OrientIndexedProperty indexedProperty) {
+        String propertyName = indexedProperty.getProperty().getName();
+        if (indexedProperty.getBy() != null) {
+            return propertyName + " BY " + indexedProperty.getBy();
+        } else {
+            return propertyName;
+        }
+    }
+
+
+    @Override
+    public Collection<? extends DatabaseObject> getAffectedDatabaseObjects() {
+        return Collections.singleton(index);
+    }
+}

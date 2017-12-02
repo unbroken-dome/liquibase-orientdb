@@ -1,0 +1,320 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:tns="http://www.unbroken-dome.org/schema/liquibase-orientdb"
+            targetNamespace="http://www.unbroken-dome.org/schema/liquibase-orientdb"
+			elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:simpleType name="OType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="boolean" />
+			<xsd:enumeration value="integer" />
+			<xsd:enumeration value="short" />
+			<xsd:enumeration value="long" />
+			<xsd:enumeration value="float" />
+			<xsd:enumeration value="double" />
+			<xsd:enumeration value="datetime" />
+			<xsd:enumeration value="string" />
+			<xsd:enumeration value="binary" />
+			<xsd:enumeration value="embedded" />
+			<xsd:enumeration value="embeddedlist" />
+			<xsd:enumeration value="embeddedset" />
+			<xsd:enumeration value="embeddedmap" />
+			<xsd:enumeration value="link" />
+			<xsd:enumeration value="linklist" />
+			<xsd:enumeration value="linkset" />
+			<xsd:enumeration value="linkmap" />
+			<xsd:enumeration value="byte" />
+			<xsd:enumeration value="date" />
+			<xsd:enumeration value="decimal" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+    <xsd:simpleType name="OTypes">
+        <xsd:list itemType="tns:OType" />
+    </xsd:simpleType>
+	
+	<xsd:simpleType name="IndexType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="unique" />
+			<xsd:enumeration value="notunique" />
+			<xsd:enumeration value="fulltext" />
+			<xsd:enumeration value="dictionary" />
+            <xsd:enumeration value="unique_hash_index" />
+            <xsd:enumeration value="notunique_hash_index" />
+            <xsd:enumeration value="fulltext_hash_index" />
+            <xsd:enumeration value="dictionary_hash_index" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="ClassAttribute">
+		<xsd:restriction base="xsd:token">
+            <xsd:enumeration value="shortname" />
+			<xsd:enumeration value="superclass" />
+			<xsd:enumeration value="oversize" />
+            <xsd:enumeration value="strictmode" />
+            <xsd:enumeration value="clusterselection" />
+            <xsd:enumeration value="abstract" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="DatabaseAttribute">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="charset" />
+			<xsd:enumeration value="clusterselection" />
+			<xsd:enumeration value="conflictstrategy" />
+			<xsd:enumeration value="dateformat" />
+			<xsd:enumeration value="datetimeformat" />
+			<xsd:enumeration value="defaultclusterid" />
+			<xsd:enumeration value="localecountry" />
+			<xsd:enumeration value="localelanguage" />
+			<xsd:enumeration value="minimumclusters" />
+			<xsd:enumeration value="timezone" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="Identifier">
+		<xsd:restriction base="xsd:token">
+			<xsd:pattern value="[A-Za-z_][A-Za-z0-9_]*" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="Identifiers">
+		<xsd:list itemType="tns:Identifier" />
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="ClusterNameOrId">
+		<xsd:union memberTypes="tns:Identifier xsd:int" />
+	</xsd:simpleType>
+
+	<xsd:simpleType name="ClusterStatus">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="online" />
+			<xsd:enumeration value="offline" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="ClusterConflictStrategy">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="version" />
+			<xsd:enumeration value="content" />
+			<xsd:enumeration value="automerge" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="PropertyQualifiedName">
+		<xsd:restriction base="xsd:token">
+			<xsd:pattern value="[A-Za-z_][A-Za-z0-9_]*\.[A-Za-z_][A-Za-z0-9_]*" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="Permission">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="none" />
+			<xsd:enumeration value="create" />
+			<xsd:enumeration value="read" />
+			<xsd:enumeration value="update" />
+			<xsd:enumeration value="delete" />
+			<xsd:enumeration value="all" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+    <xsd:simpleType name="IndexBy">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="key" />
+            <xsd:enumeration value="value" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+
+	<xsd:complexType name="PropertyConfigType">
+    	<xsd:attribute name="name" type="tns:Identifier" use="required" />
+		<xsd:attribute name="type" type="tns:OType" use="required" />
+		<xsd:attribute name="linkedType" type="tns:Identifier" />
+		<xsd:attribute name="notNull" type="xsd:boolean" />
+		<xsd:attribute name="mandatory" type="xsd:boolean" />
+		<xsd:attribute name="collate" type="xsd:string" />
+		<xsd:attribute name="readOnly" type="xsd:boolean" />
+		<xsd:attribute name="default" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="IndexedPropertyConfigType">
+        <xsd:attribute name="name" type="tns:Identifier" use="required" />
+        <xsd:attribute name="by" type="tns:IndexBy" />
+    </xsd:complexType>
+
+	<xsd:complexType name="IndexConfigType">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element name="indexedProperty" type="tns:IndexedPropertyConfigType" />
+		</xsd:choice>
+        <xsd:attribute name="name" type="tns:Identifier" />
+		<xsd:attribute name="property" type="tns:Identifiers" />
+		<xsd:attribute name="type" type="tns:IndexType" use="required" />
+		<xsd:attribute name="ignoreNullValues" type="xsd:boolean" default="true" />
+	</xsd:complexType>
+
+	<xsd:complexType name="ClusterConfigType">
+		<xsd:attribute name="status" type="tns:ClusterStatus" />
+		<xsd:attribute name="compression" type="xsd:token" />
+		<xsd:attribute name="useWal" type="xsd:boolean" />
+		<xsd:attribute name="recordGrowFactor" type="xsd:int" />
+		<xsd:attribute name="recordOverflowGrowFactor" type="xsd:int" />
+		<xsd:attribute name="conflictStrategy" type="tns:ClusterConflictStrategy" />
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="AddClusterType">
+		<xsd:attribute name="name" type="tns:ClusterNameOrId" use="required" />
+		<xsd:attribute name="to" type="tns:Identifier" use="required" />
+	</xsd:complexType>
+
+	<xsd:complexType name="AlterClusterType">
+		<xsd:complexContent>
+			<xsd:extension base="tns:ClusterConfigType">
+				<xsd:attribute name="name" type="tns:ClusterNameOrId" use="required" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ChangePropertyTypeType">
+		<xsd:attribute name="className" type="tns:Identifier" use="required" />
+		<xsd:attribute name="name" type="tns:Identifier" use="required" />
+		<xsd:attribute name="type" type="tns:OType" use="required" />
+		<xsd:attribute name="linkedType" type="tns:Identifier" />
+	</xsd:complexType>
+
+	<xsd:complexType name="CreateClassType">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element name="property" type="tns:PropertyConfigType" />
+			<xsd:element name="index" type="tns:IndexConfigType" />
+		</xsd:choice>
+		<xsd:attribute name="name" type="tns:Identifier" use="required" />
+		<xsd:attribute name="extends" type="tns:Identifier" />
+		<xsd:attribute name="clusterIds" type="xsd:NMTOKENS" />
+		<xsd:attribute name="abstract" type="xsd:boolean" default="false" />
+	</xsd:complexType>
+
+    <xsd:complexType name="CreateClusterType">
+		<xsd:complexContent>
+			<xsd:extension base="tns:ClusterConfigType">
+				<xsd:attribute name="name" type="tns:Identifier" use="required" />
+				<xsd:attribute name="id" type="xsd:int" use="optional" />
+			</xsd:extension>
+		</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="CreateEdgeClassType">
+        <xsd:complexContent>
+            <xsd:extension base="tns:CreateClassType">
+                <xsd:attribute name="from" type="tns:Identifier" />
+                <xsd:attribute name="to" type="tns:Identifier" />
+                <xsd:attribute name="createLinkProperties" type="xsd:boolean" default="false" />
+                <xsd:attribute name="createVertexLinkProperties" type="xsd:boolean" default="false" />
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="CreateIndexType">
+        <xsd:complexContent>
+            <xsd:extension base="tns:IndexConfigType">
+                <xsd:attribute name="on" type="tns:Identifier" />
+                <xsd:attribute name="keyType" type="tns:OTypes" />
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+	<xsd:complexType name="CreatePropertyType">
+    	<xsd:complexContent>
+    		<xsd:extension base="tns:PropertyConfigType">
+    			<xsd:attribute name="className" type="tns:Identifier" use="required" />
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="DropClassType">
+    	<xsd:attribute name="name" type="tns:Identifier" use="required" />
+		<xsd:attribute name="unsafe" type="xsd:boolean" default="false" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="DropClusterType">
+    	<xsd:attribute name="name" type="tns:ClusterNameOrId" use="required" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="DropIndexType">
+    	<xsd:attribute name="name" type="xsd:token" use="required" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="DropPropertyType">
+    	<xsd:attribute name="name" type="tns:PropertyQualifiedName" use="required" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="GrantType">
+    	<xsd:attribute name="permission" type="tns:Permission" use="required" />
+    	<xsd:attribute name="on" type="xsd:string" use="required" />
+    	<xsd:attribute name="to" type="xsd:string" use="required" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="RemoveClusterType">
+    	<xsd:attribute name="name" type="tns:ClusterNameOrId" use="required" />
+    	<xsd:attribute name="from" type="tns:Identifier" use="required" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="RenameClassType">
+    	<xsd:attribute name="from" type="tns:Identifier" use="required" />
+    	<xsd:attribute name="to" type="tns:Identifier" use="required" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="RenameClusterType">
+    	<xsd:attribute name="from" type="tns:ClusterNameOrId" use="required" />
+    	<xsd:attribute name="to" type="tns:Identifier" use="required" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="RenamePropertyType">
+    	<xsd:attribute name="className" type="tns:Identifier" use="required" />
+    	<xsd:attribute name="from" type="tns:Identifier" use="required" />
+    	<xsd:attribute name="to" type="tns:Identifier" use="required" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="RevokeType">
+    	<xsd:attribute name="permission" type="tns:Permission" use="required" />
+    	<xsd:attribute name="on" type="xsd:string" use="required" />
+    	<xsd:attribute name="from" type="xsd:string" use="required" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="SetClassAttributeType">
+    	<xsd:attribute name="on" type="tns:Identifier" use="required" />
+    	<xsd:attribute name="attribute" type="tns:ClassAttribute" use="required" />
+    	<xsd:attribute name="value" type="xsd:string" use="required" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="SetClusterAttributeType">
+    <xsd:attribute name="on" type="tns:ClusterNameOrId" use="required" />
+    	<xsd:attribute name="attribute" type="tns:ClusterAttribute" use="required" />
+    	<xsd:attribute name="value" type="xsd:string" use="required" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="SetDatabaseAttributeType">
+    	<xsd:attribute name="attribute" type="tns:DatabaseAttribute" use="required" />
+    	<xsd:attribute name="value" type="xsd:string" use="required" />
+    </xsd:complexType>
+
+    <xsd:element name="createClass" type="tns:CreateClassType" />
+    <xsd:element name="createCluster" type="tns:CreateClusterType" />
+    <xsd:element name="createEdgeClass" type="tns:CreateEdgeClassType" />
+    <xsd:element name="createProperty" type="tns:CreatePropertyType" />
+    <xsd:element name="createIndex" type="tns:CreateIndexType" />
+    <xsd:element name="dropClass" type="tns:DropClassType" />
+    <xsd:element name="dropCluster" type="tns:DropClusterType" />
+    <xsd:element name="dropIndex" type="tns:DropIndexType" />
+    <xsd:element name="dropProperty" type="tns:DropPropertyType" />
+    <xsd:element name="grant" type="tns:GrantType" />
+    <xsd:element name="removeCluster" type="tns:RemoveClusterType" />
+    <xsd:element name="renameClass" type="tns:RenameClassType" />
+    <xsd:element name="renameCluster" type="tns:RenameClusterType" />
+    <xsd:element name="renameProperty" type="tns:RenamePropertyType" />
+    <xsd:element name="revoke" type="tns:RevokeType" />
+    <xsd:element name="setClassAttribute" type="tns:SetClassAttributeType" />
+    <xsd:element name="setClusterAttribute" type="tns:SetClusterAttributeType" />
+    <xsd:element name="setDatabaseAttribute" type="tns:SetDatabaseAttributeType" />
+    
+</xsd:schema>

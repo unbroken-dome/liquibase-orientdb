@@ -1,0 +1,226 @@
+= Liquibase Plugin for OrientDB
+
+This is a plugin for http://www.liquibase.org/[Liquibase] that allows to use Liquibase for migrations on an
+http://orientdb.com/[OrientDB] database.
+
+[NOTE]
+====
+This plugin is still work in progress. It may still contain bugs, and not all the change types advertised in the
+XML schema are implemented yet. Contributions are welcome!
+====
+
+== Requirements
+
+The plugin requires a Java 8 (or higher) JRE. It has been tested with Liquibase 3.5.3
+and OrientDB 3.0.0, though it may work with older versions of Liquibase and/or OrientDB.
+
+== Setup
+
+Make sure the plugin JAR is on the classpath when running Liquibase. For example, when running Liquibase
+from your application, add it as a runtime dependency to your Gradle or Maven build:
+
+.build.gradle
+[source,groovy]
+----
+dependencies {
+    runtimeOnly 'org.unbroken-dome.liquibase-orientdb:liquibase-orientdb:0.1.0'
+}
+----
+
+
+.pom.xml
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>org.unbroken-dome.liquibase-orientdb</groupId>
+        <artifactId>liquibase-orientdb</artifactId>
+        <version>0.1.0</version>
+        <scope>runtime</scope>
+    </dependency>
+</dependencies>
+----
+
+You will also need the OrientDB http://orientdb.com/docs/3.0.x/jdbc-driver/[JDBC Driver] on the classpath at runtime.
+The plugin does _not_ declare a runtime dependency on it, to allow it to be used with different versions of the driver.
+
+
+== OrientDB Changes
+
+This plugin contributes several change types that are unique to OrientDB. When using XML changelog files,
+they can be imported using the namespace `+++http://www.unbroken-dome.org/schema/liquibase-orientdb+++`.
+The XML schema definition (XSD) can be found inside the plugin JAR, and should be picked up automatically
+by your IDE for code completion.
+
+[source,xml]
+----
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:o="http://www.unbroken-dome.org/schema/liquibase-orientdb" <1>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.2.xsd">
+
+    <!-- Change set definitions -->
+
+</databaseChangeLog>
+----
+<1> Define a namespace prefix for the `+++http://www.unbroken-dome.org/schema/liquibase-orientdb+++` namespace.
+
+In the following examples, we will assume the the prefix `o` is mapped to the plugin's namespace.
+
+
+=== Classes
+
+==== Creating Classes
+
+Create a class in a change set using the `createClass` change:
+
+[source,xml]
+----
+<o:createClass name="MyClass" />
+----
+
+You can specify the superclass using the `extends` attribute:
+
+[source,xml]
+----
+<o:createClass name="BaseClass"/>
+<o:createClass name="DerivedClass" extends="BaseClass" />
+----
+
+Properties and indices may be added as children of the `createClass` element for convenience and brevity:
+
+[source,xml]
+----
+<o:createClass name="Book">
+    <o:property name="title" type="string" />
+    <o:property name="pages" type="integer" />
+    <o:property name="authors" type="embeddedlist" linkedType="string" />
+    <o:index property="title" type="notunique" />
+</o:createClass>
+----
+
+==== Renaming Classes
+
+[source,xml]
+----
+<o:renameClass from="OldName" to="NewName" />
+----
+
+
+==== Dropping Classes
+
+[source,xml]
+----
+<o:dropClass name="MyClass" />
+----
+
+
+
+
+=== Properties
+
+Add properties to an existing class with the `createProperty` change:
+
+[source,xml]
+----
+<changeSet id="1" author="tk">
+    <o:createClass name="Book" />
+</changeSet>
+
+
+<changeSet id="2" author="tk">
+    <o:createProperty name="title" type="string"
+                      className="Book" />
+</changeSet>
+----
+
+Property attributes like `NOTNULL` can be specified directly in the `createProperty`
+change, even though in SQL this requires an extra statement:
+
+[source,xml]
+----
+<o:createProperty name="title" type="string" className="Book"
+                  notNull="true" mandatory="true" />
+----
+
+
+
+=== Indices
+
+==== Automatic Indices
+
+Create an automatic (property-based) index:
+
+[source,xml]
+----
+<o:createIndex on="Book" property="title" type="notunique" />
+----
+
+If the index spans multiple properties, list them in the `properties` attribute, separated by spaces:
+
+[source,xml]
+----
+<o:createIndex on="Book" property="author title" type="unique" />
+----
+
+When using indexes on `EMBEDDEDMAP` properties, use the more verbose form with an `indexedProperty` child element:
+
+[source,xml]
+----
+<o:createClass name="Book">
+    <o:property name="titles" type="embeddedmap" linkedType="string"/>
+</o:createClass>
+
+<o:createIndex on="Book" name="titles" type="notunique">
+    <o:indexedProperty name="titles" by="value" />
+</o:createIndex>
+----
+
+
+==== Manual Indices
+
+To create a manual index, set the `name` and `keyType` attributes on the `createIndex` change:
+
+[source,xml]
+----
+<o:createIndex name="mostRecentRecords"
+               type="unique"
+               keyType="date" />
+----
+
+
+=== Edge Classes
+
+When creating classes for edges in a graph database, consider using the `createEdgeClass`
+change instead of `createClass`. It allows to be more specific about the expected inbound and
+outbound types, and can optionally create link properties on the edge and/or vertex classes.
+
+[source,xml]
+----
+<o:createClass name="Author" extends="V" />
+<o:createClass name="Book" extends="V" />
+
+<o:createEdgeClass name="WrittenBy" <1>
+                   from="Book" to="Author" <2>
+                   createLinkProperties="true" <3>
+                   createVertexLinkProperties="true" /> <4>
+----
+<1> The superclass `E` is implied, it is not necessary to write `extends="E"`.
+<2> The attributes `from` and `to` are only meaningful when also using `createLinkProperties` or `createVertexLinkProperties`.
+<3> This creates link properties named `out` and `in` on the edge class. They are of type `LINK` and point to
+    the corresponding vertex class. OrientDB sets these properties in any case when instantiating an edge class,
+    but this way we can make them part of the schema.
+<4> This creates the properties `Book.out_WrittenBy` and `Author.in_WrittenBy` on each of the vertex
+    classes. They are of type `LINKLIST`, with the edge class as the linked type. OrientDB sets these properties in
+    any case when instantiating an edge class, but this way we can make them part of the schema.
+
+
+
+
+====
+DISCLAIMER:
+The author of this library has no affiliation with either the OrientDB or Liquibase projects, or the
+companies behind them.
+====
