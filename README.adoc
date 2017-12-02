@@ -41,6 +41,8 @@ dependencies {
 </dependencies>
 ----
 
+The plugin JAR is available via https://bintray.com/bintray/jcenter[JCenter].
+
 You will also need the OrientDB http://orientdb.com/docs/3.0.x/jdbc-driver/[JDBC Driver] on the classpath at runtime.
 The plugin does _not_ declare a runtime dependency on it, to allow it to be used with different versions of the driver.
 
