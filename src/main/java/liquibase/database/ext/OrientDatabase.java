@@ -1,8 +1,12 @@
 package liquibase.database.ext;
 
+import com.orientechnologies.orient.jdbc.OrientJdbcConnection;
 import liquibase.database.AbstractJdbcDatabase;
 import liquibase.database.DatabaseConnection;
+import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.DatabaseException;
+import org.unbrokendome.liquibase.jdbc.OrientJdbcConnectionWrapper;
+
 
 public class OrientDatabase extends AbstractJdbcDatabase {
 
@@ -85,8 +89,17 @@ public class OrientDatabase extends AbstractJdbcDatabase {
 		return false;
 	}
 
+
 	@Override
 	public int getPriority() {
 		return PRIORITY_DEFAULT;
+	}
+
+
+	@Override
+	public void setConnection(DatabaseConnection conn) {
+		OrientJdbcConnection jdbcConnection = (OrientJdbcConnection) ((JdbcConnection) conn).getUnderlyingConnection();
+		OrientJdbcConnectionWrapper wrappedConnection = new OrientJdbcConnectionWrapper(jdbcConnection);
+		super.setConnection(new JdbcConnection(wrappedConnection));
 	}
 }
