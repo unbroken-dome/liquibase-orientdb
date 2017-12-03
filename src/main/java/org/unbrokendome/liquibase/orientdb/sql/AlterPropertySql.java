@@ -27,8 +27,16 @@ public class AlterPropertySql extends AbstractOrientSql {
 
 	@Override
 	public String toSql() {
+
+		String attributeValueQuoted;
+		if (attributeValue instanceof String || attributeValue instanceof Enum<?>) {
+			attributeValueQuoted = "\"" + attributeValue + "\"";
+		} else {
+			attributeValueQuoted = attributeValue.toString();
+		}
+
 		return "ALTER PROPERTY " + className + "." + propertyName
-				+ " " + attributeName + " " + attributeValue;
+				+ " " + attributeName + " " + attributeValueQuoted;
 	}
 
 	
