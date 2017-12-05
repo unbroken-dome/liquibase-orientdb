@@ -43,6 +43,8 @@
             <xsd:enumeration value="notunique_hash_index" />
             <xsd:enumeration value="fulltext_hash_index" />
             <xsd:enumeration value="dictionary_hash_index" />
+			<xsd:enumeration value="lucene" />
+			<xsd:enumeration value="spatial" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	
