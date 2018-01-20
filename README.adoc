@@ -180,6 +180,13 @@ When using indexes on `EMBEDDEDMAP` properties, use the more verbose form with a
 </o:createIndex>
 ----
 
+An index engine may be specified with the `engine` attribute. The value is passed to OrientDB as-is, and is usually
+case-sensitive. Currently all built-in engine types have uppercase names.
+
+[source,xml]
+----
+<o:createIndex on="Book" property="title" type="fulltext" engine="LUCENE" />
+----
 
 ==== Manual Indices
 
@@ -190,6 +197,21 @@ To create a manual index, set the `name` and `keyType` attributes on the `create
 <o:createIndex name="mostRecentRecords"
                type="unique"
                keyType="date" />
+----
+
+
+==== Index Metadata
+
+Metadata may be added to the index using the `<metadata>` child element. The metadata JSON can be
+written as the content of the element.
+
+[source,xml]
+----
+<o:createIndex on="Book" property="title" type="fulltext" engine="LUCENE">
+    <o:metadata>{
+        "analyzer": "org.apache.lucene.analysis.en.EnglishAnalyzer"
+    }</o:metadata>
+</o:createIndex>
 ----
 
 
