@@ -23,7 +23,7 @@ from your application, add it as a runtime dependency to your Gradle or Maven bu
 [source,groovy]
 ----
 dependencies {
-    runtimeOnly 'org.unbroken-dome.liquibase-orientdb:liquibase-orientdb:0.2.1'
+    runtimeOnly 'org.unbroken-dome.liquibase-orientdb:liquibase-orientdb:0.3.0'
 }
 ----
 
@@ -35,7 +35,7 @@ dependencies {
     <dependency>
         <groupId>org.unbroken-dome.liquibase-orientdb</groupId>
         <artifactId>liquibase-orientdb</artifactId>
-        <version>0.2.1</version>
+        <version>0.3.0</version>
         <scope>runtime</scope>
     </dependency>
 </dependencies>
