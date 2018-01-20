@@ -1,9 +1,12 @@
 package org.unbrokendome.liquibase.orientdb.sql;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import liquibase.structure.DatabaseObject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -50,8 +53,29 @@ public class CreateIndexSql extends AbstractOrientSql {
                     .append(StringUtils.join(index.getKeyTypes(), ','));
         }
 
-        if (!index.isIgnoreNullValues()) {
-            builder.append(" METADATA { ignoreNullValues : false }");
+        String metadataString = index.getMetadata();
+        if (metadataString != null && !index.isIgnoreNullValues()) {
+
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                @SuppressWarnings("unchecked")
+                Map<String, Object> metadataMap = (Map<String, Object>) objectMapper.readValue(metadataString, Map.class);
+
+                metadataMap.put("ignoreNullValues", false);
+
+                metadataString = objectMapper.writeValueAsString(metadataMap);
+
+            } catch (IOException ex) {
+                // This shouldn't happen because we validated the metadata JSON before
+                throw new IllegalArgumentException("Invalid JSON metadata in index");
+            }
+
+        } else if (!index.isIgnoreNullValues()) {
+            metadataString = "{ \"ignoreNullValues\": false }";
+        }
+
+        if (metadataString != null) {
+            builder.append(" METADATA ").append(metadataString);
         }
 
         return builder.toString();

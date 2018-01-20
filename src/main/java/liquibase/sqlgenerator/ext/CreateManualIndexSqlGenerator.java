@@ -42,8 +42,9 @@ public class CreateManualIndexSqlGenerator extends AbstractSqlGenerator<CreateMa
                         statement.getKeyTypes().stream()
                                 .map(keyType -> OrientPropertyType.valueOf(keyType.toUpperCase()))
                                 .collect(Collectors.toList()))
-                .setIgnoreNullValues(statement.isIgnoreNullValues());
+                .setIgnoreNullValues(statement.isIgnoreNullValues())
+                .setMetadata(statement.getMetadata());
 
-        return new Sql[]{new CreateIndexSql(orientIndex)};
+        return new Sql[] { new CreateIndexSql(orientIndex) };
     }
 }

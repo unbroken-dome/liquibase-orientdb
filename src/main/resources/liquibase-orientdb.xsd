@@ -152,6 +152,9 @@
 		<xsd:attribute name="type" type="tns:IndexType" use="required" />
 		<xsd:attribute name="ignoreNullValues" type="xsd:boolean" default="true" />
 		<xsd:attribute name="engine" type="xsd:token" />
+		<xsd:sequence>
+			<xsd:element name="metadata" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
 	</xsd:complexType>
 
 	<xsd:complexType name="ClusterConfigType">

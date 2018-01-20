@@ -78,4 +78,16 @@ class CreateIndexTest extends AbstractLiquibaseIntegrationTest {
             index.type == "FULLTEXT"
             index.definition.fields == [ "title" ]
     }
+
+    def "create index with metadata"() {
+        when:
+            runLiquibase('IndexMetadata')
+
+        then:
+            def cityClass = databaseSchema.getClass("City")
+            cityClass.classIndexes.size() == 1
+            def index = cityClass.classIndexes.first()
+            index.metadata != null
+            index.metadata.getProperty('analyzer') == 'org.apache.lucene.analysis.en.EnglishAnalyzer'
+    }
 }

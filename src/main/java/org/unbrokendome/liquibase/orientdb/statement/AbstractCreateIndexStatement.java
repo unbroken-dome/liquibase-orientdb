@@ -11,6 +11,7 @@ public abstract class AbstractCreateIndexStatement<T extends AbstractCreateIndex
     private String type;
     private String engine;
     private boolean ignoreNullValues = true;
+    private String metadata;
 
 
     public String getName() {
@@ -53,6 +54,17 @@ public abstract class AbstractCreateIndexStatement<T extends AbstractCreateIndex
 
     public T setIgnoreNullValues(boolean ignoreNullValues) {
         this.ignoreNullValues = ignoreNullValues;
+        return self();
+    }
+
+
+    public String getMetadata() {
+        return metadata;
+    }
+
+
+    public T setMetadata(String metadata) {
+        this.metadata = metadata;
         return self();
     }
 

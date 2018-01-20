@@ -11,6 +11,5 @@ public enum OrientIndexType {
     FULLTEXT_HASH_INDEX,
     DICTIONARY,
     DICTIONARY_HASH_INDEX,
-    LUCENE,
     SPATIAL
 }

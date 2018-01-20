@@ -36,6 +36,7 @@ dependencies {
     implementation 'com.google.guava:guava:23.3-jre'
     implementation 'javax.validation:validation-api:1.1.0.Final'
     implementation 'org.hibernate:hibernate-validator:5.2.4.Final'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.6.7'
 
     compileOnly "com.orientechnologies:orientdb-jdbc:$orientDBVersion"
 

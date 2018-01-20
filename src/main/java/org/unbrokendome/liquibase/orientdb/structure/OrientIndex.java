@@ -4,9 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
-
 import org.unbrokendome.liquibase.orientdb.common.OrientPropertyType;
 import com.google.common.collect.ImmutableList;
 
@@ -18,6 +15,7 @@ public class OrientIndex extends AbstractOrientDatabaseObject<OrientIndex> {
 	private String engine;
 	private List<OrientPropertyType> keyTypes;
 	private boolean ignoreNullValues = true;
+	private String metadata;
     private boolean hasCustomName = false;
 
 
@@ -109,8 +107,19 @@ public class OrientIndex extends AbstractOrientDatabaseObject<OrientIndex> {
 		this.ignoreNullValues = ignoreNullValues;
 		return this;
 	}
-	
-	
+
+
+	public String getMetadata() {
+		return metadata;
+	}
+
+
+	public OrientIndex setMetadata(String metadata) {
+		this.metadata = metadata;
+		return this;
+	}
+
+
 	public boolean isAutoIndex() {
 		return this.orientClass != null;
 	}

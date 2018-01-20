@@ -26,6 +26,7 @@ public class IndexConfig implements AnnotatedSerializable {
     private String type;
     private String engine;
     private Boolean ignoreNullValues;
+    private String metadata;
 
 
     @SerializedField(description = "The name of the index")
@@ -104,6 +105,17 @@ public class IndexConfig implements AnnotatedSerializable {
     }
 
 
+    @SerializedField
+    public String getMetadata() {
+        return metadata;
+    }
+
+
+    public void setMetadata(String metadata) {
+        this.metadata = metadata;
+    }
+
+
     private int getNumberOfIndexedProperties() {
         if (propertyNames != null) {
             return propertyNames.size();
@@ -132,7 +144,8 @@ public class IndexConfig implements AnnotatedSerializable {
                 .setName(getName())
                 .setType(getType())
                 .setEngine(getEngine())
-                .setKeyTypes(keyTypes);
+                .setKeyTypes(keyTypes)
+                .setMetadata(metadata);
 
         if (ignoreNullValues != null) {
             statement.setIgnoreNullValues(ignoreNullValues);
@@ -164,7 +177,8 @@ public class IndexConfig implements AnnotatedSerializable {
                 .setClassName(className)
                 .setType(getType())
                 .setEngine(getEngine())
-                .setIndexedProperties(indexedProperties);
+                .setIndexedProperties(indexedProperties)
+                .setMetadata(metadata);
 
         if (ignoreNullValues != null) {
             statement.setIgnoreNullValues(ignoreNullValues);
