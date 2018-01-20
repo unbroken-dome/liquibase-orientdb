@@ -32,7 +32,7 @@ dependencies {
     implementation 'javax.validation:validation-api:1.1.0.Final'
     implementation 'org.hibernate:hibernate-validator:5.2.4.Final'
 
-    compileOnly 'com.orientechnologies:orientdb-jdbc:3.0.0RC1'
+    compileOnly 'com.orientechnologies:orientdb-jdbc:3.0.0m2'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.spockframework:spock-core:1.1-groovy-2.4'
