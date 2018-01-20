@@ -43,7 +43,6 @@
             <xsd:enumeration value="notunique_hash_index" />
             <xsd:enumeration value="fulltext_hash_index" />
             <xsd:enumeration value="dictionary_hash_index" />
-			<xsd:enumeration value="lucene" />
 			<xsd:enumeration value="spatial" />
 		</xsd:restriction>
 	</xsd:simpleType>
@@ -152,6 +151,7 @@
 		<xsd:attribute name="property" type="tns:Identifiers" />
 		<xsd:attribute name="type" type="tns:IndexType" use="required" />
 		<xsd:attribute name="ignoreNullValues" type="xsd:boolean" default="true" />
+		<xsd:attribute name="engine" type="xsd:token" />
 	</xsd:complexType>
 
 	<xsd:complexType name="ClusterConfigType">

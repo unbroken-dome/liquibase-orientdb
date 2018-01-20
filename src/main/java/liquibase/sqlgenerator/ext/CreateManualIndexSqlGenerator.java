@@ -37,6 +37,7 @@ public class CreateManualIndexSqlGenerator extends AbstractSqlGenerator<CreateMa
         OrientIndex orientIndex = new OrientIndex()
                 .setName(statement.getName())
                 .setType(OrientIndexType.valueOf(statement.getType().toUpperCase()))
+                .setEngine(statement.getEngine())
                 .setKeyTypes(
                         statement.getKeyTypes().stream()
                                 .map(keyType -> OrientPropertyType.valueOf(keyType.toUpperCase()))

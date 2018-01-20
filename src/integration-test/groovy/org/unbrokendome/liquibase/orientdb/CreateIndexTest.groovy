@@ -65,4 +65,17 @@ class CreateIndexTest extends AbstractLiquibaseIntegrationTest {
             index.type == "NOTUNIQUE"
             index.definition.fieldsToIndex == [ "titles by value" ]
     }
+
+    def "create fulltext auto index with engine"() {
+        when:
+            runLiquibase('CreateAutoIndexFulltext')
+
+        then:
+            def bookClass = databaseSchema.getClass("Book")
+            bookClass.classIndexes.size() == 1
+            def index = bookClass.getClassIndexes().first()
+            index.automatic
+            index.type == "FULLTEXT"
+            index.definition.fields == [ "title" ]
+    }
 }

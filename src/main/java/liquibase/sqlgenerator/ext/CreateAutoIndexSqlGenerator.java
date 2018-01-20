@@ -52,6 +52,7 @@ public class CreateAutoIndexSqlGenerator extends AbstractSqlGenerator<CreateAuto
                 .setOrientClass(orientClass)
                 .setIndexedProperties(indexedProperties)
                 .setType(OrientIndexType.valueOf(statement.getType().toUpperCase()))
+                .setEngine(statement.getEngine())
                 .setIgnoreNullValues(statement.isIgnoreNullValues());
 
         return new Sql[] { new CreateIndexSql(orientIndex) };

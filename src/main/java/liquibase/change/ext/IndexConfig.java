@@ -24,6 +24,7 @@ public class IndexConfig implements AnnotatedSerializable {
     private List<String> propertyNames;
     private List<IndexedPropertyConfig> indexedProperties = new ArrayList<>();
     private String type;
+    private String engine;
     private Boolean ignoreNullValues;
 
 
@@ -69,7 +70,7 @@ public class IndexConfig implements AnnotatedSerializable {
     }
 
 
-    @SerializedField
+    @SerializedField(description = "The type of the index")
     @NotNull
     public String getType() {
         return type;
@@ -78,6 +79,17 @@ public class IndexConfig implements AnnotatedSerializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+
+    @SerializedField(description = "The engine of the index")
+    public String getEngine() {
+        return engine;
+    }
+
+
+    public void setEngine(String engine) {
+        this.engine = engine;
     }
 
 
@@ -119,6 +131,7 @@ public class IndexConfig implements AnnotatedSerializable {
         CreateManualIndexStatement statement = new CreateManualIndexStatement()
                 .setName(getName())
                 .setType(getType())
+                .setEngine(getEngine())
                 .setKeyTypes(keyTypes);
 
         if (ignoreNullValues != null) {
@@ -150,6 +163,7 @@ public class IndexConfig implements AnnotatedSerializable {
                 .setName(getName())
                 .setClassName(className)
                 .setType(getType())
+                .setEngine(getEngine())
                 .setIndexedProperties(indexedProperties);
 
         if (ignoreNullValues != null) {

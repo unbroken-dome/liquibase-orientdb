@@ -21,6 +21,11 @@ testSets {
 }
 
 
+ext {
+    orientDBVersion = '3.0.0m2'
+}
+
+
 dependencies {
     api 'org.liquibase:liquibase-core:3.5.3'
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
@@ -32,7 +37,7 @@ dependencies {
     implementation 'javax.validation:validation-api:1.1.0.Final'
     implementation 'org.hibernate:hibernate-validator:5.2.4.Final'
 
-    compileOnly 'com.orientechnologies:orientdb-jdbc:3.0.0m2'
+    compileOnly "com.orientechnologies:orientdb-jdbc:$orientDBVersion"
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.spockframework:spock-core:1.1-groovy-2.4'
@@ -44,8 +49,9 @@ dependencies {
     testRuntimeOnly 'org.apache.logging.log4j:log4j-slf4j-impl:2.8.2'
     testRuntimeOnly 'com.mattbertolini:liquibase-slf4j:2.0.0'
 
-    integrationTestImplementation 'com.orientechnologies:orientdb-client:3.0.0m2'
-    integrationTestImplementation 'com.orientechnologies:orientdb-jdbc:3.0.0m2'
+    integrationTestImplementation "com.orientechnologies:orientdb-client:$orientDBVersion"
+    integrationTestRuntimeOnly "com.orientechnologies:orientdb-lucene:$orientDBVersion"
+    integrationTestImplementation "com.orientechnologies:orientdb-jdbc:$orientDBVersion"
 }
 
 configurations {

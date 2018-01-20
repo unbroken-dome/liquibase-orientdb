@@ -15,6 +15,7 @@ public class OrientIndex extends AbstractOrientDatabaseObject<OrientIndex> {
 	private OrientClass orientClass;
 	private List<OrientIndexedProperty> indexedProperties;
 	private OrientIndexType type;
+	private String engine;
 	private List<OrientPropertyType> keyTypes;
 	private boolean ignoreNullValues = true;
     private boolean hasCustomName = false;
@@ -70,8 +71,19 @@ public class OrientIndex extends AbstractOrientDatabaseObject<OrientIndex> {
 		this.type = type;
 		return this;
 	}
-	
-	
+
+
+	public String getEngine() {
+		return engine;
+	}
+
+
+	public OrientIndex setEngine(String engine) {
+		this.engine = engine;
+		return this;
+	}
+
+
 	public List<OrientPropertyType> getKeyTypes() {
 		return keyTypes;
 	}

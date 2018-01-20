@@ -9,6 +9,7 @@ public abstract class AbstractCreateIndexStatement<T extends AbstractCreateIndex
 
     private String name;
     private String type;
+    private String engine;
     private boolean ignoreNullValues = true;
 
 
@@ -30,6 +31,17 @@ public abstract class AbstractCreateIndexStatement<T extends AbstractCreateIndex
 
     public T setType(String type) {
         this.type = type;
+        return self();
+    }
+
+
+    public String getEngine() {
+        return engine;
+    }
+
+
+    public T setEngine(String engine) {
+        this.engine = engine;
         return self();
     }
 

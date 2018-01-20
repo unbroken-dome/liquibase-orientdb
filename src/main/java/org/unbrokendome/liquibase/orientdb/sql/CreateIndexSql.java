@@ -41,6 +41,10 @@ public class CreateIndexSql extends AbstractOrientSql {
 
         builder.append(index.getType());
 
+        if (index.getEngine() != null) {
+            builder.append(" ENGINE ").append(index.getEngine());
+        }
+
         if (index.getKeyTypes() != null) {
             builder.append(" ")
                     .append(StringUtils.join(index.getKeyTypes(), ','));
